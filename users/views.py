@@ -87,25 +87,3 @@ class RegisterView(generics.CreateAPIView):
         }, status=status.HTTP_201_CREATED)
 
 
-class LoginView(generics.GenericAPIView):
-    """Вход в систему (получение токенов)"""
-    permission_classes = [AllowAny]
-
-    def post(self, request, *args, **kwargs):
-        email = request.data.get('email')
-        password = request.data.get('password')
-
-        user = authenticate(request, email=email, password=password)
-
-        if user is None:
-            return Response(
-                {'error': 'Неверный email или пароль'},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
-
-        refresh = RefreshToken.for_user(user)
-
-        return Response({
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        })

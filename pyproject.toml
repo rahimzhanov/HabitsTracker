@@ -1,18 +1,17 @@
-[project]
-name = "habitstracker"
-version = "0.1.0"
-description = ""
-authors = [
-    {name = "Rakhimzhanov Aman",email = "amanrahim2@gmail.com"}
-]
-readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "python-dotenv (>=1.2.2,<2.0.0)",
-    "requests (>=2.33.1,<3.0.0)"
-]
-
-
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.poetry.dependencies]
+python = "^3.13"
+Django = "^6.0.3"
+djangorestframework = "^3.17.1"
+djangorestframework-simplejwt = "^5.5.1"
+django-filter = "^25.2"
+drf-yasg = "^1.21.15"
+django-celery-beat = "^2.9.0"
+celery = "^5.6.3"
+redis = "^7.4.0"
+psycopg2-binary = "^2.9.11"
+python-dotenv = "^1.2.2"
+Pillow = "^12.2.0"
+django-cors-headers = "^4.9.0"
+coverage = "^7.6.0"
+flake8 = "^7.1.0"
+requests = "^2.32.3"
