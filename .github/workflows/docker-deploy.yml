@@ -10,6 +10,17 @@ jobs:
   test-and-build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: --health-cmd="pg_isready -U postgres" --health-interval=10s --health-timeout=5s --health-retries=5
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -88,6 +99,6 @@ jobs:
         port: 22
         script: |
           cd /var/www/habits-tracker
-          docker-compose down
-          docker-compose up -d --build
+          docker compose down
+          docker compose up -d --build
           docker system prune -f
