@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # PostgreSQL база данных
   db:
     image: postgres:15-alpine
     container_name: habits_db
@@ -12,7 +11,7 @@ services:
       POSTGRES_USER: ${DATABASE_USER:-postgres}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-postgres}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-postgres}"]
       interval: 10s
@@ -21,7 +20,6 @@ services:
     networks:
       - habits_network
 
-  # Redis
   redis:
     image: redis:7-alpine
     container_name: habits_redis
@@ -35,7 +33,6 @@ services:
     networks:
       - habits_network
 
-  # Django + Gunicorn
   web:
     build: .
     container_name: habits_web
@@ -66,7 +63,6 @@ services:
     networks:
       - habits_network
 
-  # Celery worker
   celery:
     build: .
     container_name: habits_celery
@@ -92,7 +88,6 @@ services:
     networks:
       - habits_network
 
-  # Celery beat
   celery-beat:
     build: .
     container_name: habits_celery_beat
@@ -118,7 +113,6 @@ services:
     networks:
       - habits_network
 
-  # Nginx
   nginx:
     image: nginx:alpine
     container_name: habits_nginx

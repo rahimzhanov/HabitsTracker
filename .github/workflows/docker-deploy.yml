@@ -87,7 +87,7 @@ jobs:
         docker-compose up -d
         sleep 15
         docker ps
-        curl -f http://localhost/health/ || true
+        curl -f http://localhost:8080/health/ || true
 
     - name: Stop Docker Compose
       run: |
