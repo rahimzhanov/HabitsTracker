@@ -4,6 +4,13 @@
 
 Backend-приложение для отслеживания и управления полезными привычками. Пользователи могут создавать привычки, получать напоминания в Telegram и следить за своим прогрессом.
 
+Проект полностью контейнеризирован и может быть запущен через Docker Compose. Настроен CI/CD с использованием GitHub Actions для автоматического тестирования и деплоя на удаленный сервер.
+
+## Адрес развернутого приложения
+
+Сервер доступен по адресу:
+http://81.26.181.203:8080/api/habits/
+
 ## Функциональность
 
 - Регистрация и авторизация пользователей (JWT)
@@ -11,7 +18,7 @@ Backend-приложение для отслеживания и управлен
 - Публичные привычки (доступны для просмотра другим пользователям)
 - Интеграция с Telegram для напоминаний
 - Автоматические уведомления о необходимости выполнить привычку
-- Пагинация (5 привычек на странице)
+- Пагинация (5 привычек на страницу)
 - Валидация данных:
   - Длительность выполнения не более 120 секунд
   - Периодичность от 1 до 7 дней
@@ -30,15 +37,17 @@ Backend-приложение для отслеживания и управлен
 - Celery (отложенные задачи)
 - Celery Beat (периодические задачи)
 - Telegram Bot API
-- Swagger/ReDoc (документация API)
-- CORS (для фронтенда)
+- Docker / Docker Compose
+- GitHub Actions (CI/CD)
+- Nginx (веб-сервер)
+- Gunicorn (WSGI сервер)
 
-## Установка и запуск
+## Установка и запуск (локально)
 
 ### 1. Клонирование репозитория
 
-git clone https://github.com/rahimzhanov/habits-tracker.git
-cd habits-tracker
+git clone https://github.com/rahimzhanov/HabitsTracker.git
+cd HabitsTracker
 
 ### 2. Создание виртуального окружения
 
@@ -79,7 +88,6 @@ CREATE DATABASE habits_db;
 
 ### 6. Применение миграций
 
-python manage.py makemigrations
 python manage.py migrate
 
 ### 7. Создание суперпользователя
@@ -102,6 +110,23 @@ celery -A config beat --loglevel=info
 
 python manage.py runserver
 
+## Запуск через Docker (рекомендуемый способ)
+
+### 1. Установите Docker и Docker Compose
+
+### 2. Склонируйте репозиторий
+
+git clone https://github.com/rahimzhanov/HabitsTracker.git
+cd HabitsTracker
+
+### 3. Запустите проект
+
+docker-compose up --build
+
+### 4. Проект будет доступен по адресу
+
+http://localhost:8080/api/habits/
+
 ## API Эндпоинты
 
 ### Пользователи
@@ -109,7 +134,7 @@ python manage.py runserver
 | Метод | Эндпоинт | Описание |
 |-------|----------|----------|
 | POST | /api/users/register/ | Регистрация |
-| POST | /api/users/login/ | Вход (получение токена) |
+| POST | /api/users/token/ | Вход (получение токена) |
 | POST | /api/users/token/refresh/ | Обновление токена |
 | POST | /api/users/telegram/connect/ | Привязка Telegram chat_id |
 
@@ -127,13 +152,11 @@ python manage.py runserver
 
 ## Документация API
 
-- Swagger UI: http://127.0.0.1:8000/swagger/
-- ReDoc: http://127.0.0.1:8000/redoc/
+- Swagger UI: http://localhost:8000/swagger/
+- ReDoc: http://localhost:8000/redoc/
 
 ## Структура проекта
-```commandline
-
-
+````
 HabitsTracker/
 ├── config/                 # Настройки проекта
 │   ├── __init__.py
@@ -162,13 +185,55 @@ HabitsTracker/
 │   ├── serializers.py     # Регистрация
 │   ├── urls.py
 │   └── views.py           # RegisterView, LoginView
+├── nginx/                  # Конфигурация Nginx
+│   └── nginx.conf
 ├── media/                  # Загружаемые файлы
 ├── static/                 # Статические файлы
+├── Dockerfile
+├── docker-compose.yml
 ├── .env                    # Переменные окружения
 ├── .gitignore
 ├── manage.py
 └── requirements.txt
-```
+````
+## CI/CD (GitHub Actions)
+
+Проект настроен на автоматическое тестирование и деплой при каждом push в ветку main.
+
+### Этапы CI/CD:
+
+1. Установка зависимостей
+2. Линтинг кода (flake8)
+3. Запуск тестов
+4. Сборка Docker образов
+5. Деплой на удаленный сервер через SSH
+
+### Secrets для GitHub Actions:
+
+| Secret | Описание |
+|--------|----------|
+| SERVER_HOST | IP адрес сервера (81.26.181.203) |
+| SERVER_USER | Имя пользователя на сервере (ubuntu) |
+| SSH_PRIVATE_KEY | Приватный SSH ключ для доступа к серверу |
+
+## Настройка удаленного сервера
+
+### 1. Установите Docker и Docker Compose на сервер
+
+sudo apt update
+sudo apt install docker.io docker-compose -y
+sudo usermod -aG docker $USER
+
+### 2. Создайте директорию для проекта
+
+sudo mkdir -p /var/www/habits-tracker
+
+### 3. GitHub Actions автоматически скопирует код и запустит контейнеры
+
+### 4. Проект будет доступен по адресу
+
+http://81.26.181.203:8080/api/habits/
+
 ## Тестирование
 
 Запуск всех тестов:
