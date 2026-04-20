@@ -2,9 +2,9 @@ name: CI/CD Docker
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, homework_docker ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
 
 jobs:
   test-and-build:
