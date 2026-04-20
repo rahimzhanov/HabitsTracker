@@ -61,6 +61,23 @@ jobs:
         sudo apt-get update
         sudo apt-get install docker-compose -y
 
+    - name: Create .env file
+      run: |
+        cat > .env << EOF
+        SECRET_KEY=django-insecure-test-key
+        DEBUG=True
+        DATABASE_NAME=habits_db
+        DATABASE_USER=postgres
+        DATABASE_PASSWORD=postgres
+        DATABASE_HOST=db
+        DATABASE_PORT=5432
+        REDIS_HOST=redis
+        REDIS_PORT=6379
+        REDIS_DB=0
+        TELEGRAM_TOKEN=test_token
+        EOF
+        cat .env
+
     - name: Build Docker images
       run: |
         docker-compose build
@@ -71,7 +88,6 @@ jobs:
         sleep 15
         docker ps
         curl -f http://localhost/health/ || true
-        curl -f http://localhost/api/habits/ || true
 
     - name: Stop Docker Compose
       run: |
