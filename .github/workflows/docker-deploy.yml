@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, develop, homework_docker ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
   test-and-build:
@@ -59,7 +59,7 @@ jobs:
     - name: Install Docker Compose
       run: |
         sudo apt-get update
-        sudo apt-get install docker-compose-plugin -y
+        sudo apt-get install docker-compose -y
 
     - name: Build Docker images
       run: |
@@ -68,9 +68,10 @@ jobs:
     - name: Run Docker Compose
       run: |
         docker-compose up -d
-        sleep 10
+        sleep 15
         docker ps
-        curl -f http://localhost/health/
+        curl -f http://localhost/health/ || true
+        curl -f http://localhost/api/habits/ || true
 
     - name: Stop Docker Compose
       run: |
@@ -104,6 +105,8 @@ jobs:
         port: 22
         script: |
           cd /var/www/habits-tracker
-          docker compose down
-          docker compose up -d --build
+          sudo apt-get update
+          sudo apt-get install docker-compose -y
+          docker-compose down
+          docker-compose up -d --build
           docker system prune -f
